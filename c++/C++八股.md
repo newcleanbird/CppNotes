@@ -72,6 +72,11 @@
 预编译命令：
 [include](./关键字与限定符/include.md)
 
+定义类型别名或符号替换:
+[typedef](./关键字与限定符/typedef.md)
+[#define.md](./关键字与限定符/#define.md)
+[using](./关键字与限定符/using.md)
+
 ## 语言特性相关
 语句：
 [范围 for 语句](./语言特性相关/范围%20for%20语句.md)
