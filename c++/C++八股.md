@@ -38,13 +38,13 @@ int 被设置为⾃然⻓度，即为计算机处理起来效率最⾼的⻓度�
 
 - 首先给出NULL在C和C++中的定义
 
-  ```c++
-  #ifdef __cplusplus  // 检查是否在C++环境中编译
-  #define NULL 0   // 如果是在C++环境下，那么NULL被定义为整数值0
-  #else  
-  #define NULL ((void *)0)  // 在C中，直接使用整数0作为指针可能会导致警告或错误，因为C语言要求显式地将整数转换为指针类型。因此，在C中NULL被定义为((void *)0)，这是一个类型安全的空指针常量。
-  #endif  
-  ```
+```c++
+#ifdef __cplusplus  // 检查是否在C++环境中编译
+#define NULL 0   // 如果是在C++环境下，那么NULL被定义为整数值0
+#else  
+#define NULL ((void *)0)  // 在C中，直接使用整数0作为指针可能会导致警告或错误，因为C语言要求显式地将整数转换为指针类型。因此，在C中NULL被定义为((void *)0)，这是一个类型安全的空指针常量。
+#endif  
+```
 
 > 要明白一点儿，NULL是一个无类型的东西，而且是一个宏。而宏这个东西，从C++诞生开始，就是C++之父嗤之以鼻的东西，他推崇尽量避免宏。
 
@@ -995,6 +995,54 @@ int *const ptr = &x; // 指针常量，不能修改指针的值，但可以修�
 *ptr = 30; // 正确，可以修改指针所指向的内容
 ```
 
+#### constexpr 和 const
+
+const 表示“只读”的语义，constexpr 表示“常量”的语义
+constexpr 只能定义编译期常量，而 const 可以定义编译期常量，也可以定义运行期常量。
+你将⼀个成员函数标记为constexpr，则顺带也将它标记为了const。如果你将⼀个变量标记为constexpr，则同样它是const的。但相反并不成⽴，⼀个const的变量或函数，并不是constexpr的
+
+1. constexpr变量
+
+    复杂系统中很难分辨⼀个初始值是不是常量表达式，可以将变量声明为constexpr类型，由编译器来验证变量的值是否是⼀个常量表达式。
+
+2. 必须使⽤常量初始化：
+
+    ```cpp
+    constexpr int n = 20;
+    constexpr int m = n + 1;
+    static constexpr int MOD = 1000000007;
+    ```
+
+    如果constexpr声明中定义了⼀个指针，constexpr仅对指针有效，和所指对象⽆关。
+
+    ```cpp
+    constexpr int *p = nullptr; //常量指针 顶层const
+    const int *q = nullptr; //指向常量的指针， 底层const
+    int *const q = nullptr; //顶层const
+    ```
+
+3. constexpr函数：
+    constexpr函数是指能⽤于常量表达式的函数。
+    函数的返回类型和所有形参类型都是字⾯值类型，函数体有且只有⼀条return语句。
+
+    ```cpp
+    constexpr int new() {return 42;}
+    ```
+
+    为了可以在编译过程展开，constexpr函数被隐式转换成了内联函数。
+    constexpr和内联函数可以在程序中多次定义，⼀般定义在头⽂件。
+
+4. constexpr 构造函数：
+
+    构造函数不能说const，但字⾯值常量类的构造函数可以是constexpr。
+    constexpr构造函数必须有⼀个空的函数体，即所有成员变量的初始化都放到初始化列表中。对象调⽤的成员函数必须使⽤ constexpr 修饰
+
+5. constexpr的好处
+   1. 为⼀些不能修改数据提供保障，写成变量则就有被意外修改的⻛险。
+   2. 有些场景，编译器可以在编译期对constexpr的代码进行优化，提⾼效率。
+   3. 相⽐宏来说，没有额外的开销，但更安全可靠。
+
+
 ### static 关键字
 
 [static](./关键字与限定符/static.md)
@@ -1058,15 +1106,7 @@ static 关键字主要用于控制变量和函数的生命周期、作用域以�
       };
       ```
 
-### const 和 static
-
-[const和static](./images/const和static.png)
-
-- static和const可以同时修饰成员函数吗?
-
-  答：不可以。C++编译器在实现const的成员函数的时候为了确保该函数不能修改类的实例的状态，会在函数中添加一个隐式的参数const this*。但当一个成员为static的时候，该函数是没有this指针的。也就是说此时const的用法和static是冲突的。两者的语意是矛盾的。**static的作用是表示该函数只作用在类型的静态变量上，与类的实例没有关系；而const的作用是确保函数不能修改类的实例的状态**，与类型的静态变量没有关系。因此不能同时用它们。--
-
-### static初始化时机和线程安全问题
+#### static初始化时机和线程安全问题
 
 **先说在C语言中：**
 
@@ -1133,52 +1173,13 @@ void foo() {
 }
 ```
 
-### constexpr 和 const
+#### const 和 static
 
-const 表示“只读”的语义，constexpr 表示“常量”的语义
-constexpr 只能定义编译期常量，而 const 可以定义编译期常量，也可以定义运行期常量。
-你将⼀个成员函数标记为constexpr，则顺带也将它标记为了const。如果你将⼀个变量标记为constexpr，则同样它是const的。但相反并不成⽴，⼀个const的变量或函数，并不是constexpr的
+[const和static](./images/const和static.png)
 
-1. constexpr变量
+- static和const可以同时修饰成员函数吗?
 
-    复杂系统中很难分辨⼀个初始值是不是常量表达式，可以将变量声明为constexpr类型，由编译器来验证变量的值是否是⼀个常量表达式。
-
-2. 必须使⽤常量初始化：
-
-    ```cpp
-    constexpr int n = 20;
-    constexpr int m = n + 1;
-    static constexpr int MOD = 1000000007;
-    ```
-
-    如果constexpr声明中定义了⼀个指针，constexpr仅对指针有效，和所指对象⽆关。
-
-    ```cpp
-    constexpr int *p = nullptr; //常量指针 顶层const
-    const int *q = nullptr; //指向常量的指针， 底层const
-    int *const q = nullptr; //顶层const
-    ```
-
-3. constexpr函数：
-    constexpr函数是指能⽤于常量表达式的函数。
-    函数的返回类型和所有形参类型都是字⾯值类型，函数体有且只有⼀条return语句。
-
-    ```cpp
-    constexpr int new() {return 42;}
-    ```
-
-    为了可以在编译过程展开，constexpr函数被隐式转换成了内联函数。
-    constexpr和内联函数可以在程序中多次定义，⼀般定义在头⽂件。
-
-4. constexpr 构造函数：
-
-    构造函数不能说const，但字⾯值常量类的构造函数可以是constexpr。
-    constexpr构造函数必须有⼀个空的函数体，即所有成员变量的初始化都放到初始化列表中。对象调⽤的成员函数必须使⽤ constexpr 修饰
-
-5. constexpr的好处
-   1. 为⼀些不能修改数据提供保障，写成变量则就有被意外修改的⻛险。
-   2. 有些场景，编译器可以在编译期对constexpr的代码进行优化，提⾼效率。
-   3. 相⽐宏来说，没有额外的开销，但更安全可靠。
+  答：不可以。C++编译器在实现const的成员函数的时候为了确保该函数不能修改类的实例的状态，会在函数中添加一个隐式的参数const this*。但当一个成员为static的时候，该函数是没有this指针的。也就是说此时const的用法和static是冲突的。两者的语意是矛盾的。**static的作用是表示该函数只作用在类型的静态变量上，与类的实例没有关系；而const的作用是确保函数不能修改类的实例的状态**，与类型的静态变量没有关系。因此不能同时用它们。--
 
 ### #define 和 typedef 的区别
 
@@ -1229,7 +1230,7 @@ typedef故名思意就是类型定义的意思，但是它**并不是定义一�
 
 **#define:**
 
-### define为一宏定义语句，本质就是文本替换
+define为一宏定义语句，本质就是文本替换
 
 **区别:**
 
