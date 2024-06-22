@@ -1,27 +1,34 @@
 # noexcept
+
 noexcept是C++11引入的关键字，用于指定一个函数承诺不抛出任何异常。这个关键字对于性能优化、接口设计和异常处理策略有着重要意义。以下是关于noexcept的详细讲解：
 
 ## 基本用法
+
 1. 声明函数不抛出异常：
 当你在函数声明或定义中使用noexcept关键字，你是在告诉编译器该函数不会抛出任何异常。基本语法如下：
-```cpp
-void myFunction() noexcept;
-```
-或者在类的成员函数声明中：
-```cpp
-class MyClass {
-public:
-    void myMethod() noexcept;
-};
-```
+
+    ```cpp
+    void myFunction() noexcept;
+    ```
+
+    或者在类的成员函数声明中：
+
+    ```cpp
+    class MyClass {
+    public:
+        void myMethod() noexcept;
+    };
+    ```
 
 2. 基于条件的noexcept：
 你还可以根据一个常量表达式的值决定是否抛出异常。如果该表达式求值为true，则函数承诺不抛出异常；如果为false，则函数可以抛出异常。
+
 ```cpp
 void mayThrowOrNot(bool condition) noexcept(condition);
 ```
 
 ## 优点
+
 1. 性能提升：
 编译器知道一个函数不抛出异常，可以执行以下优化：
    - 省略异常处理的开销，比如无需展开调用栈以维护异常处理信息。
@@ -34,6 +41,7 @@ noexcept提供了关于函数行为的额外信息，帮助库使用者了解哪
 对于STL容器和智能指针等需要高效资源管理的组件，noexcept对于启用高效的移动构造函数和移动赋值至关重要，因为它允许编译器在必要时安全地选择移动而非复制。
 
 ## 限制与注意事项
+
 1. 继承和虚函数：
 如果基类的虚函数被声明为noexcept，派生类覆盖该函数时也必须保持noexcept。反之，如果基类函数允许抛出异常，派生类的对应函数可以声明为noexcept或不声明。
 
@@ -47,13 +55,5 @@ noexcept特性可以用于SFINAE（Substitution Failure Is Not An Error），即
 C++还提供了一个noexcept运算符，它在编译时评估一个表达式是否可能抛出异常。例如，noexcept(expr)返回一个布尔值，指示expr是否可以无异常地执行。
 
 ## 总结
+
 noexcept是现代C++编程中一个重要的特性，它不仅能够帮助开发者编写更高效、更明确的代码，而且对于库设计者来说，是实现高效资源管理、优化性能和确保接口兼容性的关键工具。合理使用noexcept能够显著提升程序的可靠性和执行效率。
-
-
-
-
-
-
-
-
-
