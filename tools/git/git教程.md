@@ -362,27 +362,26 @@ git push origin 欲推送的分支
 
 ### 开发流程
 
-
 使用Git将代码提交到GitHub可以分为以下几个步骤：
 
 1. 步骤一：在GitHub上创建仓库
    1. 首先登录到GitHub账号，并创建一个新的仓库。点击页面右上角的New按钮，填写仓库名称、描述等信息，并选择是否设置为公共或私有仓库。
 
 2. 步骤二：在本地电脑上安装Git
-   1. 从Git官网（https://git-scm.com/）下载适用于你操作系统的Git安装包，并按照指示安装。
+   1. 从[Git官网](https://git-scm.com/)下载适用于你操作系统的Git安装包，并按照指示安装。
 
 3. 步骤三：在本地电脑上配置Git
    1. 打开命令行终端，并通过以下命令设置用户名和邮箱：git config –global user.name “你的用户名”和git config –global user.email “你的邮箱地址”。
 
 4. 步骤四：将github文件拉到本地
-   1. git clone -m <sshlink>
+   1. `git clone -m <sshlink>`
 
 5. 步骤五：将代码添加到Git仓库
    1. 将你的代码复制到工作目录下。
    2. 使用以下命令将代码添加到Git仓库：git add .
-      如果只想提交部分文件，可以使用git add命令加上文件路径。
-      git add <filename>
-      git add *
+      * 如果只想提交部分文件，可以使用git add命令加上文件路径。
+      * `git add <filename>`
+      * `git add *`
 
 6. 步骤六：提交代码到本地仓库
    1. 使用以下命令将代码提交到本地仓库：
@@ -392,7 +391,7 @@ git push origin 欲推送的分支
 7. 步骤七：将本地仓库与GitHub仓库关联
    1. 在GitHub上创建的仓库页面找到“HTTPS”或“SSH”链接，然后使用以下命令将本地仓库与GitHub仓库关联：
       git remote add origin 仓库链接。
-      链接格式为：https://github.com/你的用户名/仓库名称.git。
+      链接格式为：`https://github.com/你的用户名/仓库名称.git`。
 
 8. 步骤八：将本地仓库代码推送到GitHub
    1. 使用以下命令将本地仓库代码推送到GitHub：git push -u origin master。
