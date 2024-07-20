@@ -17,3 +17,7 @@ C++笔记总结 C++八股文 (一文在手，天下我有)
 ### 其他工具
 
 [git](./tools/git/git教程.md)
+
+## 版权声明
+
+本文由[淡定但丁](https://github.com/newcleanbird)编辑，有任何问题欢迎访问github提交PR。
